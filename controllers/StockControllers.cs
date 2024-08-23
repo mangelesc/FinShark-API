@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.controllers
@@ -24,7 +25,9 @@ namespace api.controllers
         public IActionResult GetAll()
         {
           // ToList() - Deferred execution, its going to return a list as an object, we need to get the SQL the go out the DB and get the info we need. 
-          var stocks = _context.Stocks.ToList(); 
+          var stocks = _context.Stocks.ToList()
+          // Select - kind of a map, return an immutable list of ToStockDto
+          .Select( s => s.ToStockDto() ); 
 
           return Ok(stocks); 
         }
@@ -40,7 +43,7 @@ namespace api.controllers
             return NotFound();
           }
 
-          return Ok(stock); 
+          return Ok(stock.ToStockDto()); 
         }
 
     }
