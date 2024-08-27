@@ -16,8 +16,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// 
+// Dependency injections
 builder.Services.AddScoped<IStockRepository, StockRepository>(); 
+builder.Services.AddScoped<ICommentRepository, CommentRepository>(); 
+
 
 var app = builder.Build();
 

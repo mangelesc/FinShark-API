@@ -16,15 +16,15 @@ namespace api.controllers
     public class StockControllers : ControllerBase
     {
         // To prevent it to be mutable
-        private readonly ApplicationDBContext _context;
         private readonly IStockRepository _stockRepo; 
+
 
         // We use ApplicationDBContext to bring in our DB
         public StockControllers (ApplicationDBContext context, IStockRepository stockRepo)
         {
           _stockRepo = stockRepo; 
-          _context = context; 
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -34,8 +34,9 @@ namespace api.controllers
           // Select - kind of a map, return an immutable list of ToStockDto
           var stockDto = stocks.Select( s => s.ToStockDto() ); 
 
-          return Ok(stocks); 
+          return Ok(stockDto); 
         }
+
 
         // {id} - .net uses Model Binding to extract this string out, turn it into an int and 
         [HttpGet("{id}")]
@@ -51,6 +52,7 @@ namespace api.controllers
           return Ok(stock.ToStockDto()); 
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
@@ -59,6 +61,7 @@ namespace api.controllers
 
           return CreatedAtAction(nameof(GetById), new { id = stockModel.Id}, stockModel.ToStockDto()); 
         }
+
 
         [HttpPut]
         [Route("{id}")]
@@ -74,6 +77,7 @@ namespace api.controllers
           return Ok(stockModel.ToStockDto());
 
         }
+
 
 
         [HttpDelete]
