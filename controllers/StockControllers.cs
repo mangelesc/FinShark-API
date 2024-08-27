@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,12 @@ namespace api.controllers
     {
         // To prevent it to be mutable
         private readonly ApplicationDBContext _context;
+        private readonly IStockRepository _stockRepo; 
 
         // We use ApplicationDBContext to bring in our DB
-        public StockControllers (ApplicationDBContext context)
+        public StockControllers (ApplicationDBContext context, IStockRepository stockRepo)
         {
+          _stockRepo = stockRepo; 
           _context = context; 
         }
 
@@ -27,7 +30,7 @@ namespace api.controllers
         public async Task<IActionResult> GetAll()
         {
           // ToList() - Deferred execution, its going to return a list as an object, we need to get the SQL the go out the DB and get the info we need. 
-          var stocks = await _context.Stocks.ToListAsync(); 
+          var stocks = await _stockRepo.GetAllAsync();
           // Select - kind of a map, return an immutable list of ToStockDto
           var stockDto = stocks.Select( s => s.ToStockDto() ); 
 
