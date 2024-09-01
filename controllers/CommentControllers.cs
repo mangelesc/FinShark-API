@@ -19,11 +19,13 @@ namespace api.controllers
         private readonly IStockRepository _stockRepo; 
 
 
+
         public CommentControllers(ICommentRepository commentRepo, IStockRepository stockRepo)
         {
           _commentRepo = commentRepo; 
           _stockRepo = stockRepo; 
         }
+
 
 
         [HttpGet]
@@ -38,6 +40,7 @@ namespace api.controllers
         }
 
 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -50,6 +53,7 @@ namespace api.controllers
 
           return Ok(comment.ToCommentDto()); 
         }
+
 
 
         [HttpPost("{stockId}")]
@@ -67,7 +71,22 @@ namespace api.controllers
           // nameof(GetById) 
           // new { id = commentModel} -> find the actual comment
           // commentModel.ToCommentDto() -> so it returns it into the form that we want
-          return CreatedAtAction(nameof(GetById), new { id = commentModel}, commentModel.ToCommentDto()); 
+          return CreatedAtAction(nameof(GetById), new { id = commentModel.Id}, commentModel.ToCommentDto()); 
+        }
+
+
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto) {
+          var commentModel = await _commentRepo.UpdateAsync(id, updateDto);
+
+          if (commentModel == null)
+            {
+              return NotFound();
+            }
+
+          return Ok(commentModel.ToCommentDto());
         }
     }
 }
