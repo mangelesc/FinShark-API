@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace api.controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
           if(!ModelState.IsValid)
           {
@@ -35,7 +36,7 @@ namespace api.controllers
           }
           
           // ToList() - Deferred execution, its going to return a list as an object, we need to get the SQL the go out the DB and get the info we need. 
-          var stocks = await _stockRepo.GetAllAsync();
+          var stocks = await _stockRepo.GetAllAsync(query);
           // Select - kind of a map, return an immutable list of ToStockDto
           var stockDto = stocks.Select( s => s.ToStockDto() ); 
 
